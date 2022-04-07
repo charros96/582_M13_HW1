@@ -62,7 +62,9 @@ def tradeTokens(sell_token: address, sell_quantity: uint256):
 @external
 def ownerWithdraw():
 	assert self.owner == msg.sender
+	self.tokenA.approve(self.owner,self.tokenAQty)
 	self.tokenA.transfer(self.owner, self.tokenAQty)
+	self.tokenB.approve(self.owner,self.tokenBQty)
 	self.tokenB.transfer(self.owner, self.tokenBQty)
 	selfdestruct(self.owner)
 	
