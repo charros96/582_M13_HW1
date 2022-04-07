@@ -22,13 +22,13 @@ def provideLiquidity(tokenA_addr: address, tokenB_addr: address, tokenA_quantity
 	assert self.invariant == 0 #This ensures that liquidity can only be provided once
 	#Your code here
 	self.tokenA.address = ERC20(tokenA_addr)
-  self.tokenA.address.transferFrom(msg.sender, self, tokenA_quantity)
+  	self.tokenA.address.transferFrom(msg.sender, self, tokenA_quantity)
 	self.tokenB.address = ERC20(tokenB_addr)
-  self.tokenB.address.transferFrom(msg.sender, self, tokenB_quantity)
-  self.owner = msg.sender
-  self.tokenAQty = tokenA_quantity
-  self.tokenBQty = tokenB_quantity
-  self.invariant = tokenA_quantity * tokenB_quantity
+  	self.tokenB.address.transferFrom(msg.sender, self, tokenB_quantity)
+  	self.owner = msg.sender
+	self.tokenAQty = tokenA_quantity
+	self.tokenBQty = tokenB_quantity
+	self.invariant = tokenA_quantity * tokenB_quantity
 	assert self.invariant > 0
 
 # Trades one token for the other
@@ -38,20 +38,20 @@ def tradeTokens(sell_token: address, sell_quantity: uint256):
 	fee: uint256 = sell_quantity / 500
 	if sell_token == self.tokenA.address:
 
-  	tokenA_in_purchase: uint256 = sell_quantity - fee
-  	new_tokenAs: uint256 = self.totalAQty + tokenA_in_purchase
-  	new_tokenBs: uint256 = self.invariant / new_tokenAs
-  	self.tokenB_address.transfer(msg.sender, self.tokenBQty - new_tokenBs)
-  	self.tokenAQty = new_tokenAs
-  	self.tokenBQty = new_tokenBs
+  		tokenA_in_purchase: uint256 = sell_quantity - fee
+  		new_tokenAs: uint256 = self.totalAQty + tokenA_in_purchase
+  		new_tokenBs: uint256 = self.invariant / new_tokenAs
+  		self.tokenB_address.transfer(msg.sender, self.tokenBQty - new_tokenBs)
+  		self.tokenAQty = new_tokenAs
+  		self.tokenBQty = new_tokenBs
 	if sell_token == self.tokenB.address:
 
-  	tokenB_in_purchase: uint256 = sell_quantity - fee
-  	new_tokenBs: uint256 = self.totalBQty + tokenB_in_purchase
-  	new_tokenAs: uint256 = self.invariant / new_tokenBs
-  	self.tokenA_address.transfer(msg.sender, self.tokenAQty - new_tokenAs)
-  	self.tokenBQty = new_tokenBs
-  	self.tokenAQty = new_tokenAs
+  		tokenB_in_purchase: uint256 = sell_quantity - fee
+  		new_tokenBs: uint256 = self.totalBQty + tokenB_in_purchase
+  		new_tokenAs: uint256 = self.invariant / new_tokenBs
+  		self.tokenA_address.transfer(msg.sender, self.tokenAQty - new_tokenAs)
+  		self.tokenBQty = new_tokenBs
+  		self.tokenAQty = new_tokenAs
 	
 
 # Owner can withdraw their funds and destroy the market maker
