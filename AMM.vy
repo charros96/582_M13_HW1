@@ -21,10 +21,14 @@ def get_token_address(token: uint256) -> address:
 def provideLiquidity(tokenA_addr: address, tokenB_addr: address, tokenA_quantity: uint256, tokenB_quantity: uint256):
 	assert self.invariant == 0 #This ensures that liquidity can only be provided once
 	#Your code here
+	self.tokenA = ERC(tokenA_addr)
 	self.tokenA.address = tokenA_addr
-	self.tokenA.address.transferFrom(msg.sender, self, tokenA_quantity)
+	self.tokenA.approve(self.owner,tokenA_quantity)
+	self.tokenA.transferFrom(msg.sender, self, tokenA_quantity)
+	self.tokenB = ERC(tokenB_addr)
 	self.tokenB.address = tokenB_addr
-	self.tokenB.address.transferFrom(msg.sender, self, tokenB_quantity)
+	self.tokenB.approve(self.owner,tokenA_quantity)
+	self.tokenB.transferFrom(msg.sender, self, tokenB_quantity)
 	self.owner = msg.sender
 	self.tokenAQty = tokenA_quantity
 	self.tokenBQty = tokenB_quantity
@@ -58,6 +62,7 @@ def tradeTokens(sell_token: address, sell_quantity: uint256):
 @external
 def ownerWithdraw():
 	assert self.owner == msg.sender
-	self.token_address.transfer(self.owner, self.totalTokenQty)
+	self.tokenA.transfer(self.owner, self.tokenAQty)
+	self.tokenB.transfer(self.owner, self.tokenBQty)
 	selfdestruct(self.owner)
 	
