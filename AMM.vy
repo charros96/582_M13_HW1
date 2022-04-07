@@ -30,8 +30,8 @@ def provideLiquidity(tokenA_addr: address, tokenB_addr: address, tokenA_quantity
 	self.tokenB.approve(self.owner,tokenA_quantity)
 	self.tokenB.transferFrom(msg.sender, self, tokenB_quantity)
 	self.owner = msg.sender
-	self.tokenAQty = tokenA_quantity
-	self.tokenBQty = tokenB_quantity
+	self.tokenA.balanceOf = tokenA_quantity
+	self.tokenB.balanceOf = tokenB_quantity
 	self.invariant = tokenA_quantity * tokenB_quantity
 	assert self.invariant > 0
 
@@ -43,26 +43,26 @@ def tradeTokens(sell_token: address, sell_quantity: uint256):
 	if sell_token == self.tokenA.address:
 
 		tokenA_in_purchase: uint256 = sell_quantity - fee
-		new_tokenAs: uint256 = self.totalAQty + tokenA_in_purchase
+		new_tokenAs: uint256 = self.tokenA.balanceOf + tokenA_in_purchase
 		new_tokenBs: uint256 = self.invariant / new_tokenAs
-		self.tokenB_address.transfer(msg.sender, self.tokenBQty - new_tokenBs)
-		self.tokenAQty = new_tokenAs
-		self.tokenBQty = new_tokenBs
+		self.tokenB_address.transfer(msg.sender, self.tokenB.balanceOf - new_tokenBs)
+		self.tokenA.balanceOf = new_tokenAs
+		self.tokenB.balanceOf = new_tokenBs
 	if sell_token == self.tokenB.address:
 
 		tokenB_in_purchase: uint256 = sell_quantity - fee
-		new_tokenBs: uint256 = self.totalBQty + tokenB_in_purchase
+		new_tokenBs: uint256 = self.tokenB.balanceOf + tokenB_in_purchase
 		new_tokenAs: uint256 = self.invariant / new_tokenBs
-		self.tokenA_address.transfer(msg.sender, self.tokenAQty - new_tokenAs)
-		self.tokenBQty = new_tokenBs
-		self.tokenAQty = new_tokenAs
+		self.tokenA_address.transfer(msg.sender, self.tokenA.balanceOf - new_tokenAs)
+		self.tokenB.balanceOf = new_tokenBs
+		self.tokenA.balanceOf = new_tokenAs
 	
 
 # Owner can withdraw their funds and destroy the market maker
 @external
 def ownerWithdraw():
 	assert self.owner == msg.sender
-	self.tokenA.transfer(self.owner, self.tokenAQty)
-	self.tokenB.transfer(self.owner, self.tokenBQty)
+	self.tokenA.transfer(self.owner, self.tokenA.balanceOf)
+	self.tokenB.transfer(self.owner, self.tokenB.balanceOf)
 	selfdestruct(self.owner)
 	
